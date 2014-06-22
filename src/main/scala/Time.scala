@@ -8,9 +8,9 @@ sealed trait Time {
 }
 
 object Time {
-  /*case class Duration(dur: SDuration) extends Time {
-    def value = ...
-  }*/
+  case class Duration(dur: SDuration) extends Time {
+    def value = s"${dur.toSeconds}s"
+  }
   case class Date(date: JDate) extends Time {
     def value = Millis(date.getTime).value
   }

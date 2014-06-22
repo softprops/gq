@@ -16,6 +16,8 @@ A points time is reprented as a the time in milliseconds since the epoc.
 ```scala
 // for future interface
 import scala.concurrent.ExecutionContext.Implicits.global
+// representing time
+import scala.concurrent.duration._
 import gq.{ Stat, Query }
 
 // define a query connection interface ( optionally with a login )
@@ -24,11 +26,14 @@ val q = Query("https://graphite.host.com").as(user, pass)
 // lookup the graphite stats for a pattern 
 val uppers = q.names("stats.timers.api.*.upper")
 
+// set a window of time for the query ( defaults to -24 hours until now )
+val window = uppers.from(-4.hours).until(-3.hours)
+
 // fetching just the resulting names ( values are computed lazily )
-uppers(_.map(_.name)).onComplete(println)
+window(_.map(_.name)).onComplete(println)
 
 // find the point containing the maximum value in each matching series
-uppers(_.map { line =>
+window(_.map { line =>
   (line.name, line.points.collect {
     case (Some(value), time) => (value, time)
   } match {

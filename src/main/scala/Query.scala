@@ -2,6 +2,7 @@ package gq
 
 import dispatch._
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.duration.Duration
 
 case class Credentials(user: String, pass: String) {
   override def toString = s"Credentials($user, ${"x"*pass.size})"
@@ -19,9 +20,14 @@ case class Query(
   def as(user: String, password: String) =
     copy(credentials = Some(Credentials(user, password)))
 
-  def from(f: Time) =  copy(_from = Some(f))
 
-  def until(u: Time) = copy(_until = Some(u))
+  def from(f: Duration): Query = from(Time.Duration(f))
+
+  def from(f: Time): Query = copy(_from = Some(f))
+
+  def until(u: Duration): Query = until(Time.Duration(u))
+
+  def until(u: Time): Query = copy(_until = Some(u))
 
   def stat(sx: Stat*) = copy(stats = stats ++ sx)
 

@@ -39,7 +39,7 @@ uppers(_.map { line =>
 
 
 // perform function transformation on the server
-q.stat(Stat.Abs("stats.timers.api.*.upper"))().onComplete(println)
+q.stat(Stat.Alias("stats.timers.api.*.upper", "api"))().onComplete(println)
 
 ```
 

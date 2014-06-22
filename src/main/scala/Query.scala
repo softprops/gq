@@ -10,9 +10,9 @@ case class Credentials(user: String, pass: String) {
 case class Query(
   private val host: String,
   private val credentials: Option[Credentials] = None,
-  private val _from: Option[Time] = None, // will default to 24 hours ago
-  private val _until: Option[Time] = None, // will default to now
-  private val stats: Seq[Stat] = Seq.empty,
+  private val _from: Option[Time]              = None, // will default to 24 hours ago
+  private val _until: Option[Time]             = None, // will default to now
+  private val stats: Seq[Stat]                 = Seq.empty,
   private val http: Http = Http)
  (implicit ec: ExecutionContext) {
 

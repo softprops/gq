@@ -10,13 +10,16 @@ object Stat {
   // http://graphite.readthedocs.org/en/latest/functions.html
 
   /** http://graphite.readthedocs.org/en/latest/functions.html#graphite.render.functions.absolute */
-  case class Abs(names: String*) extends Stat {
-    val query = names.mkString(",")
+  case class Abs(series: String) extends Stat {
+    val query = s"absolute($series)"
   }
 
   /** http://graphite.readthedocs.org/en/latest/functions.html#graphite.render.functions.aggregateLine */
 
   /** http://graphite.readthedocs.org/en/latest/functions.html#graphite.render.functions.alias */
+  case class Alias(series: String, alias: String) extends Stat {
+    val query = s"alias($series,'$alias')"
+  }
 
   /** http://graphite.readthedocs.org/en/latest/functions.html#graphite.render.functions.aliasByMetric */
 

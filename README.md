@@ -46,6 +46,8 @@ window(_.map { line =>
 // perform function transformation on the server
 q.stat(Stat.Alias("stats.timers.api.*.upper", "api"))().onComplete(println)
 
+// parse a query from a raw url query string ( useful for if you have saved queries )
+q.str("target=alias(stats.timers.api.*.upper,'api')")().onComplete(println)
 ```
 
 

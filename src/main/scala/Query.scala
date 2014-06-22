@@ -20,7 +20,6 @@ case class Query(
   def as(user: String, password: String) =
     copy(credentials = Some(Credentials(user, password)))
 
-
   def from(f: Duration): Query = from(Time.Duration(f))
 
   def from(f: Time): Query = copy(_from = Some(f))
@@ -32,6 +31,25 @@ case class Query(
   def stat(sx: Stat*) = copy(stats = stats ++ sx)
 
   def names(nx: String*) = copy(stats = stats ++ nx.map(Stat.Name(_)))
+
+  case class Str(str: String) {
+    private[this] val canonicalized = {
+      val queryStr = if (str.startsWith("?")) str.drop(1) else str
+      s"$host/render?format=raw&$queryStr"
+    }
+
+    def apply(): Future[Traversable[Series]] = apply(identity)
+
+    def apply[T](transform: Traversable[Series] => T): Future[T] =
+      http((credentials match {
+        case Some(Credentials(user, pass)) => url(canonicalized).as_!(user, pass)
+        case _ => url(canonicalized)
+      }) OK {
+        resp => transform(Series.parse(resp.getResponseBody))
+      })
+  }
+
+  def str(queryString: String) =  Str(queryString)
 
   def apply(): Future[Traversable[Series]] = apply(identity)
 
@@ -49,5 +67,13 @@ case class Query(
 
   def close() = http.shutdown()
   
+  override def toString = {
+    val qStr = (_from.map(("from" -> _.value))
+     ++ _until.map(("until" -> _.value))
+     ++ stats.map(("target" -> _.query))).map {
+       case (k, v) => s"$k=$v"
+     }mkString("&")
+    s"$host/render?format=raw&$qStr"
+  }
 }
 

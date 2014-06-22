@@ -1,9 +1,8 @@
 # gq
 
-Graphite Query
+[Graphite](http://graphite.wikidot.com/) [Query](http://graphite.readthedocs.org/en/latest/render_api.html)
 
 > Stylish immutable async composible graphite queries 
-
 
 ## usage
 

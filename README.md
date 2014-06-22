@@ -1,4 +1,4 @@
-# gq
+# GQ
 
 [Graphite](http://graphite.wikidot.com/) [Query](http://graphite.readthedocs.org/en/latest/render_api.html) ( \gee-cue\ )
 

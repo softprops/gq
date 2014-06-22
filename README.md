@@ -1,8 +1,6 @@
 # gq
 
-( \gee-cue\ )
-
-[Graphite](http://graphite.wikidot.com/) [Query](http://graphite.readthedocs.org/en/latest/render_api.html)
+[Graphite](http://graphite.wikidot.com/) [Query](http://graphite.readthedocs.org/en/latest/render_api.html) ( \gee-cue\ )
 
 > Stylish immutable async composible graphite queries 
 

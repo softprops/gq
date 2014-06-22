@@ -31,8 +31,8 @@ val window = uppers.from(-4.hours).until(-3.hours)
 window(_.map(_.name)).onComplete(println)
 
 // find the point containing the maximum value in each matching series
-window(_.map { line =>
-  (line.name, line.definedPoints match {
+window(_.map { series =>
+  (series.name, series.definedPoints match {
     case empty if empty.isEmpty => 0D
     case xs => xs.maxBy(_._1)
   })

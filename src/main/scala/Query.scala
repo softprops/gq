@@ -13,7 +13,7 @@ case class Query(
   private val _from: Option[Time]              = None, // will default to 24 hours ago
   private val _until: Option[Time]             = None, // will default to now
   private val stats: Seq[Stat]                 = Seq.empty,
-  private val http: Http = Http)
+  private val http: Http                       = Http)
  (implicit ec: ExecutionContext) {
 
   def as(user: String, password: String) =

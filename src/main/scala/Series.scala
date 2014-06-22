@@ -13,7 +13,6 @@ case class Series(
       str.takeWhile(_ != ',') match {
         case "" => stream
         case value =>
-          // in a stat set, some values may not be present. let those be represented by -1
           val rep = if ("None" == value) None else Option(value.toDouble)
           (rep, time) #:: next(time + stepMillis, str.drop(value.size + 1), stream)
       }

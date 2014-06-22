@@ -2,7 +2,7 @@
 
 [Graphite](http://graphite.wikidot.com/) [Query](http://graphite.readthedocs.org/en/latest/render_api.html) ( \gee-cue\ )
 
-> Stylish immutable async composible graphite queries 
+> Stylish immutable async composable graphite queries
 
 ## usage
 
@@ -32,9 +32,7 @@ window(_.map(_.name)).onComplete(println)
 
 // find the point containing the maximum value in each matching series
 window(_.map { line =>
-  (line.name, line.points.collect {
-    case (Some(value), time) => (value, time)
-  } match {
+  (line.name, line.definedPoints match {
     case empty if empty.isEmpty => 0D
     case xs => xs.maxBy(_._1)
   })

@@ -7,6 +7,13 @@ case class Series(
   to: Long,
   private val step: Int,
   private val unparsed: String) {
+
+  /** @return Stream defined points in this series */
+  lazy val definedPoints: Stream[(Double, Long)] =
+    points.collect { case (Some(value), time) => (value, time) }
+
+  /** @return a Stream of all in this series. An undefined value at a point in time
+   *          is represented as None */
   lazy val points: Stream[Series.Point] = {
     val stepMillis = step * 1000
     def next(time: Long, str: String, stream: Stream[Series.Point]): Stream[Series.Point] =

@@ -1,6 +1,6 @@
 package gq
 
-import dispatch._
+import dispatch.{ Http, Req, url }
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration.Duration
 
@@ -41,12 +41,7 @@ case class Query(
     def apply(): Future[Traversable[Series]] = apply(identity)
 
     def apply[T](transform: Traversable[Series] => T): Future[T] =
-      http((credentials match {
-        case Some(Credentials(user, pass)) => url(canonicalized).as_!(user, pass)
-        case _ => url(canonicalized)
-      }) OK {
-        resp => transform(Series.parse(resp.getResponseBody))
-      })
+      request(url(canonicalized), transform)
   }
 
   /** process a raw query string */
@@ -55,16 +50,11 @@ case class Query(
   def apply(): Future[Traversable[Series]] = apply(identity)
 
   def apply[T](transform: Traversable[Series] => T): Future[T] =
-    http((credentials match {
-      case Some(Credentials(user, pass)) => url(host).as_!(user, pass)
-      case _ => url(host)
-    }) / "render" <<?
-         (("format" -> "raw") :: Nil)
-         ++ _from.map(("from" -> _.value))
-         ++ _until.map(("until" -> _.value))
-         ++ stats.map(("target" -> _.query)) OK {
-           resp => transform(Series.parse(resp.getResponseBody))
-         })
+    request(url(host) / "render" <<?
+            (("format" -> "raw") :: Nil)
+            ++ _from.map(("from"   -> _.value))
+            ++ _until.map(("until" -> _.value))
+            ++ stats.map(("target" -> _.query)), transform)
 
   def close() = http.shutdown()
   
@@ -73,8 +63,16 @@ case class Query(
      ++ _until.map(("until" -> _.value))
      ++ stats.map(("target" -> _.query))).map {
        case (k, v) => s"$k=$v"
-     }mkString("&")
+     } mkString("&")
     s"$host/render?format=raw&$qStr"
   }
+
+ private def request[T](req: Req, transform: Traversable[Series] => T): Future[T] =
+    http((credentials match {
+      case Some(Credentials(user, pass)) => req.as_!(user, pass)
+      case _ => req
+    }) OK {
+      resp => transform(Series.parse(resp.getResponseBody))
+    })
 }
 

@@ -49,6 +49,7 @@ case class Query(
       })
   }
 
+  /** process a raw query string */
   def str(queryString: String) =  Str(queryString)
 
   def apply(): Future[Traversable[Series]] = apply(identity)

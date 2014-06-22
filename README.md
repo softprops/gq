@@ -8,7 +8,7 @@ Graphite Query
 ## usage
 
 A query is represented by an instance of a `gq.Query`.
-A query defines an interface for fetching graphite data represented as a `qa.Series`
+A query defines an interface for fetching graphite `qa.Stats` data representings results as a list of `qa.Series`
 A `Series` provides an interface for accessing points represented as `gq.Point` ( a type alias for (Option[Double], Long) ).
 A points time is reprented as a the time in milliseconds since the epoc.
 
@@ -16,7 +16,7 @@ A points time is reprented as a the time in milliseconds since the epoc.
 ```scala
 // for future interface
 import scala.concurrent.ExecutionContext.Implicits.global
-import gq.Query
+import gq.{ Stat, Query }
 
 // define a query connection interface ( optionally with a login )
 val q = Query("https://graphite.host.com").as(user, pass)
@@ -37,6 +37,12 @@ uppers(_.map { line =>
   })
 }).onComplete(println)
 
+
+// perform function transformation on the server
+q.stat(Stat.Abs("stats.timers.api.*.upper"))().onComplete(println)
+
 ```
+
+
 
 Doug Tangren (softprops) 2014

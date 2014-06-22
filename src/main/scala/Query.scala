@@ -25,7 +25,7 @@ case class Query(
 
   def stat(sx: Stat*) = copy(stats = stats ++ sx)
 
-  def names(nx: String*) = copy(stats = stats ++ nx.map(Stat(_)))
+  def names(nx: String*) = copy(stats = stats ++ nx.map(Stat.Name(_)))
 
   def apply(): Future[Traversable[Series]] = apply(identity)
 
